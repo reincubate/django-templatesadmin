@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.template.loaders.app_directories import app_template_dirs
+from django.template.loaders.app_directories import get_app_template_dirs
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
@@ -69,11 +69,18 @@ TEMPLATESADMIN_EDITHOOKS = tuple(_hooks)
 
 _fixpath = lambda path: os.path.abspath(os.path.normpath(path))
 
+try:
+    additional_dirs = []
+    for template_def in settings.TEMPLATES:
+        additional_dirs.extend(template_def.get('DIRS', []))
+except KeyError:
+    additional_dirs = settings.TEMPLATE_DIRS
+
 TEMPLATESADMIN_TEMPLATE_DIRS = getattr(
     settings,
     'TEMPLATESADMIN_TEMPLATE_DIRS', [
-        d for d in list(settings.TEMPLATE_DIRS) + \
-        list(app_template_dirs) if os.path.isdir(d)
+        d for d in additional_dirs + \
+        list(get_app_template_dirs('templates')) if os.path.isdir(d)
     ]
 )
 
