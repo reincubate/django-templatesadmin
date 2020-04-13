@@ -1,6 +1,7 @@
 from django.conf.urls import url
+from templatesadmin.views import listing, modify
 
 urlpatterns = [
-    url(r'^$', templatesadmin.views.listing, name='templatesadmin-overview'),
-    url(r'^edit(?P<path>.*)/$', templatesadmin.views.modify, name='templatesadmin-edit'),
+    url(r'^$', listing, name='templatesadmin-overview'),
+    url(r'^edit(?P<path>.*)/$', modify, name='templatesadmin-edit'),
 ]
